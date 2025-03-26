@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.29.0"></script>
+</head>
+<body>
+  <div id="vis"/>
+  <script>
+    const spec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 1000,
+  "height": 800,
+  "data": {
+    "url": "https://raw.githubusercontent.com/h-bhatt/capstone/main/sustainability_reports_fixed.csv",
+    "format": {"type": "csv"}
+  },
+  "title": "University Sustainability Heatmap",
+  "transform": [
+    {
+      "fold": [
+        "evidence_provided",
+        "framework_used_used",
+        "challenges_acknowledged",
+        "third_party_verification_provided",
+        "scope_3_emissions_included",
+        "energy_breakdown_provided",
+        "waste_management_provided",
+        "water_consumption_reported",
+        "green_building_certifications_included",
+        "external_collaborations_collaborated",
+        "social_responsibility_included",
+        "leadership_involvement_involved",
+        "funding_transparency_transparent"
+      ],
+      "as": ["variable", "status"]
+    },
+    {"calculate": "lower(trim(datum.status))", "as": "status_clean"},
+    {"calculate": "toNumber(datum.sust_rank)", "as": "sust_rank_numeric"},
+    {
+      "calculate": "datum.university + ' (' + datum.country + ')'",
+      "as": "university_with_country"
+    },
+    {
+      "lookup": "variable",
+      "from": {
+        "data": {
+          "values": [
+            {
+              "key": "evidence_provided",
+              "label": "Data-Driven Evidence",
+              "details": "evidence_details"
+            },
+            {
+              "key": "framework_used_used",
+              "label": "Use of Frameworks",
+              "details": "framework_used_name"
+            },
+            {
+              "key": "challenges_acknowledged",
+              "label": "Acknowledged Challenges",
+              "details": "challenges_details"
+            },
+            {
+              "key": "third_party_verification_provided",
+              "label": "Third-Party Verification",
+              "details": "third_party_verification_company"
+            },
+            {
+              "key": "scope_3_emissions_included",
+              "label": "Scope 3 Emissions",
+              "details": "scope_3_emissions_details"
+            },
+            {
+              "key": "energy_breakdown_provided",
+              "label": "Energy Breakdown",
+              "details": "energy_breakdown_details"
+            },
+            {
+              "key": "waste_management_provided",
+              "label": "Waste Management",
+              "details": "waste_management_details"
+            },
+            {
+              "key": "water_consumption_reported",
+              "label": "Water Consumption",
+              "details": "water_consumption_details"
+            },
+            {
+              "key": "green_building_certifications_included",
+              "label": "Green Building Certifications",
+              "details": "green_building_certifications_details"
+            },
+            {
+              "key": "external_collaborations_collaborated",
+              "label": "External Collaborations",
+              "details": "external_collaborations_details"
+            },
+            {
+              "key": "social_responsibility_included",
+              "label": "Social Responsibility",
+              "details": "social_responsibility_details"
+            },
+            {
+              "key": "leadership_involvement_involved",
+              "label": "Leadership Involvement",
+              "details": "leadership_involvement_details"
+            },
+            {
+              "key": "funding_transparency_transparent",
+              "label": "Funding Transparency",
+              "details": "funding_transparency_details"
+            }
+          ]
+        },
+        "key": "key",
+        "fields": ["label", "details"]
+      },
+      "as": ["variable_label", "details_column"]
+    },
+    {
+      "calculate": "isValid(datum[datum.details_column]) && datum[datum.details_column] !== '[]' && datum[datum.details_column] !== '' ? datum[datum.details_column] : 'No evidence provided.'",
+      "as": "evidence_text"
+    }
+  ],
+  "mark": "rect",
+  "encoding": {
+    "x": {
+      "field": "variable_label",
+      "type": "ordinal",
+      "title": "Sustainability Metrics",
+      "axis": {"labelAngle": -45},
+      "sort": [
+        "Data-Driven Evidence",
+        "Use of Frameworks",
+        "Acknowledged Challenges",
+        "Third-Party Verification",
+        "Scope 3 Emissions",
+        "Energy Breakdown",
+        "Waste Management",
+        "Water Consumption",
+        "Green Building Certifications",
+        "External Collaborations",
+        "Social Responsibility",
+        "Leadership Involvement",
+        "Funding Transparency"
+      ]
+    },
+    "y": {
+      "field": "university_with_country",
+      "type": "ordinal",
+      "title": "University",
+      "sort": {"field": "sust_rank_numeric", "order": "ascending"}
+    },
+    "color": {
+      "condition": [
+        {"test": "datum.status_clean === 'yes'", "value": "#0A1264"},
+        {"test": "datum.status_clean === 'partial'", "value": "#0A1264"},
+        {"test": "datum.status_clean === 'no'", "value": "#c2e6f3"}
+      ],
+      "value": "#D3D3D3"
+    },
+    "tooltip": [
+      {"field": "university", "type": "ordinal", "title": "University"},
+      {"field": "country", "type": "ordinal", "title": "Country"},
+      {
+        "field": "variable_label",
+        "type": "ordinal",
+        "title": "Sustainability Metric"
+      },
+      {"field": "status", "type": "nominal", "title": "Reported"},
+      {"field": "evidence_text", "type": "nominal", "title": "Evidence"}
+    ]
+  },
+  "config": {
+    "view": {"step": 50},
+    "axis": {"domain": false},
+    "scale": {"bandPaddingInner": 0.003}
+  }
+};
+    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>
