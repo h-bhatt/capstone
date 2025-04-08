@@ -35,24 +35,27 @@
     }
     #vis {
       margin: auto;
-      width: 90%;
+      width: 95%;
+      min-height: 800px;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="/mnt/data/London_School_of_Economics-Logo.wine.png" alt="LSE Logo" />
+    <img src="https://raw.githubusercontent.com/h-bhatt/capstone/main/London_School_of_Economics-Logo.wine.png" alt="LSE Logo" />
     <div>
       <h1>University Sustainability Heatmap</h1>
       <h2>LSE School of Public Policy | MPA 25’ Capstone Project | Prepared for Moody’s</h2>
     </div>
-    <img src="/mnt/data/Moody's_Logo.png" alt="Moody's Logo" />
+    <img src="https://raw.githubusercontent.comh-bhatt/capstone/main/Moodys_Logo.png" alt="Moody's Logo" />
   </header>
+
   <div id="vis"></div>
 
   <script>
-    const spec = "/mnt/data/visualization.vl (1).json";
-    vegaEmbed('#vis', spec)
+    const specUrl = "https://raw.githubusercontent.com/h-bhatt/capstone/main/visualization.vg.json";
+
+    vegaEmbed('#vis', specUrl)
       .then(result => console.log("Chart rendered successfully."))
       .catch(console.error);
   </script>
