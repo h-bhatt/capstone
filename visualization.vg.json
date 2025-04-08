@@ -1,0 +1,214 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 1000,
+  "height": 800,
+  "title": {"text": "University Sustainability Heatmap", "frame": "group"},
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_1",
+      "values": [
+        {
+          "key": "evidence_provided",
+          "label": "Data-Driven Evidence",
+          "details": "evidence_details"
+        },
+        {
+          "key": "framework_used_used",
+          "label": "Use of Frameworks",
+          "details": "framework_used_name"
+        },
+        {
+          "key": "challenges_acknowledged",
+          "label": "Acknowledged Challenges",
+          "details": "challenges_details"
+        },
+        {
+          "key": "third_party_verification_provided",
+          "label": "Third-Party Verification",
+          "details": "third_party_verification_company"
+        },
+        {
+          "key": "scope_3_emissions_included",
+          "label": "Scope 3 Emissions",
+          "details": "scope_3_emissions_details"
+        },
+        {
+          "key": "energy_breakdown_provided",
+          "label": "Energy Breakdown",
+          "details": "energy_breakdown_details"
+        },
+        {
+          "key": "waste_management_provided",
+          "label": "Waste Management",
+          "details": "waste_management_details"
+        },
+        {
+          "key": "water_consumption_reported",
+          "label": "Water Consumption",
+          "details": "water_consumption_details"
+        },
+        {
+          "key": "green_building_certifications_included",
+          "label": "Green Building Certifications",
+          "details": "green_building_certifications_details"
+        },
+        {
+          "key": "external_collaborations_collaborated",
+          "label": "External Collaborations",
+          "details": "external_collaborations_details"
+        },
+        {
+          "key": "social_responsibility_included",
+          "label": "Social Responsibility",
+          "details": "social_responsibility_details"
+        },
+        {
+          "key": "leadership_involvement_involved",
+          "label": "Leadership Involvement",
+          "details": "leadership_involvement_details"
+        },
+        {
+          "key": "funding_transparency_transparent",
+          "label": "Funding Transparency",
+          "details": "funding_transparency_details"
+        }
+      ]
+    },
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/h-bhatt/capstone/main/sustainability_reports_fixed.csv",
+      "format": {"type": "csv", "delimiter": ","},
+      "transform": [
+        {
+          "type": "fold",
+          "fields": [
+            "evidence_provided",
+            "framework_used_used",
+            "challenges_acknowledged",
+            "third_party_verification_provided",
+            "scope_3_emissions_included",
+            "energy_breakdown_provided",
+            "waste_management_provided",
+            "water_consumption_reported",
+            "green_building_certifications_included",
+            "external_collaborations_collaborated",
+            "social_responsibility_included",
+            "leadership_involvement_involved",
+            "funding_transparency_transparent"
+          ],
+          "as": ["variable", "status"]
+        },
+        {
+          "type": "formula",
+          "expr": "lower(trim(datum.status))",
+          "as": "status_clean"
+        },
+        {
+          "type": "formula",
+          "expr": "toNumber(datum.sust_rank)",
+          "as": "sust_rank_numeric"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.university + ' (' + datum.country + ')'",
+          "as": "university_with_country"
+        },
+        {
+          "type": "lookup",
+          "from": "source_1",
+          "key": "key",
+          "fields": ["variable"],
+          "values": ["label", "details"],
+          "as": ["variable_label", "details_column"]
+        },
+        {
+          "type": "formula",
+          "expr": "isValid(datum[datum.details_column]) && datum[datum.details_column] !== '[]' && datum[datum.details_column] !== '' ? datum[datum.details_column] : 'No evidence provided.'",
+          "as": "evidence_text"
+        },
+        {
+          "type": "formula",
+          "expr": "datum[\"variable_label\"]===\"Data-Driven Evidence\" ? 0 : datum[\"variable_label\"]===\"Use of Frameworks\" ? 1 : datum[\"variable_label\"]===\"Acknowledged Challenges\" ? 2 : datum[\"variable_label\"]===\"Third-Party Verification\" ? 3 : datum[\"variable_label\"]===\"Scope 3 Emissions\" ? 4 : datum[\"variable_label\"]===\"Energy Breakdown\" ? 5 : datum[\"variable_label\"]===\"Waste Management\" ? 6 : datum[\"variable_label\"]===\"Water Consumption\" ? 7 : datum[\"variable_label\"]===\"Green Building Certifications\" ? 8 : datum[\"variable_label\"]===\"External Collaborations\" ? 9 : datum[\"variable_label\"]===\"Social Responsibility\" ? 10 : datum[\"variable_label\"]===\"Leadership Involvement\" ? 11 : datum[\"variable_label\"]===\"Funding Transparency\" ? 12 : 13",
+          "as": "x_variable_label_sort_index"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": ["rect"],
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "fill": [
+            {"test": "datum.status_clean === 'yes'", "value": "#0A1264"},
+            {"test": "datum.status_clean === 'partial'", "value": "#0A1264"},
+            {"test": "datum.status_clean === 'no'", "value": "#c2e6f3"},
+            {"value": "#D3D3D3"}
+          ],
+          "tooltip": {
+            "signal": "{\"University\": isValid(datum[\"university\"]) ? datum[\"university\"] : \"\"+datum[\"university\"], \"Country\": isValid(datum[\"country\"]) ? datum[\"country\"] : \"\"+datum[\"country\"], \"Sustainability Metric\": isValid(datum[\"variable_label\"]) ? datum[\"variable_label\"] : \"\"+datum[\"variable_label\"], \"Reported\": isValid(datum[\"status\"]) ? datum[\"status\"] : \"\"+datum[\"status\"], \"Evidence\": isValid(datum[\"evidence_text\"]) ? datum[\"evidence_text\"] : \"\"+datum[\"evidence_text\"]}"
+          },
+          "description": {
+            "signal": "\"Sustainability Metrics: \" + (isValid(datum[\"variable_label\"]) ? datum[\"variable_label\"] : \"\"+datum[\"variable_label\"]) + \"; University: \" + (isValid(datum[\"university_with_country\"]) ? datum[\"university_with_country\"] : \"\"+datum[\"university_with_country\"]) + \"; Country: \" + (isValid(datum[\"country\"]) ? datum[\"country\"] : \"\"+datum[\"country\"]) + \"; Sustainability Metric: \" + (isValid(datum[\"variable_label\"]) ? datum[\"variable_label\"] : \"\"+datum[\"variable_label\"]) + \"; Reported: \" + (isValid(datum[\"status\"]) ? datum[\"status\"] : \"\"+datum[\"status\"]) + \"; Evidence: \" + (isValid(datum[\"evidence_text\"]) ? datum[\"evidence_text\"] : \"\"+datum[\"evidence_text\"])"
+          },
+          "x": {"scale": "x", "field": "variable_label"},
+          "width": {"signal": "max(0.25, bandwidth('x'))"},
+          "y": {"scale": "y", "field": "university_with_country"},
+          "height": {"signal": "max(0.25, bandwidth('y'))"}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "band",
+      "domain": {
+        "data": "source_0",
+        "field": "variable_label",
+        "sort": {"op": "min", "field": "x_variable_label_sort_index"}
+      },
+      "range": [0, {"signal": "width"}],
+      "paddingInner": 0.003,
+      "paddingOuter": 0.0015
+    },
+    {
+      "name": "y",
+      "type": "band",
+      "domain": {
+        "data": "source_0",
+        "field": "university_with_country",
+        "sort": {"op": "min", "field": "sust_rank_numeric"}
+      },
+      "range": [0, {"signal": "height"}],
+      "paddingInner": 0.003,
+      "paddingOuter": 0.0015
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Sustainability Metrics",
+      "labelAngle": 315,
+      "labelAlign": "right",
+      "labelBaseline": "top",
+      "zindex": 1
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "University",
+      "zindex": 1
+    }
+  ],
+  "config": {"axis": {"domain": false}}
+}
