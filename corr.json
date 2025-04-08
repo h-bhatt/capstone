@@ -1,0 +1,262 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "Scatter plot comparing QS Sustainability Rank with number of criteria met",
+  "background": "white",
+  "padding": 5,
+  "width": 700,
+  "height": 500,
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_0",
+      "values": [
+        {
+          "university": "University of Cambridge",
+          "sust_rank": 127,
+          "criteria_met": 13
+        },
+        {
+          "university": "University of Hull",
+          "sust_rank": 229,
+          "criteria_met": 13
+        },
+        {
+          "university": "London School of Economics",
+          "sust_rank": 85,
+          "criteria_met": 13
+        },
+        {
+          "university": "Carleton University",
+          "sust_rank": 481,
+          "criteria_met": 13
+        },
+        {
+          "university": "University of Delaware",
+          "sust_rank": 261,
+          "criteria_met": 12
+        },
+        {
+          "university": "Imperial College London",
+          "sust_rank": 16,
+          "criteria_met": 12
+        },
+        {
+          "university": "University of Sussex",
+          "sust_rank": 130,
+          "criteria_met": 12
+        },
+        {
+          "university": "University of British Columbia",
+          "sust_rank": 3,
+          "criteria_met": 12
+        },
+        {"university": "Université Laval", "sust_rank": 30, "criteria_met": 12},
+        {
+          "university": "Stanford University",
+          "sust_rank": 35,
+          "criteria_met": 11
+        },
+        {
+          "university": "University of Pennsylvania",
+          "sust_rank": 19,
+          "criteria_met": 11
+        },
+        {
+          "university": "University of Virginia",
+          "sust_rank": 60,
+          "criteria_met": 11
+        },
+        {
+          "university": "University of Oxford",
+          "sust_rank": 8,
+          "criteria_met": 11
+        },
+        {"university": "Aston University", "sust_rank": 70, "criteria_met": 11},
+        {
+          "university": "Ulster University",
+          "sust_rank": 93,
+          "criteria_met": 11
+        },
+        {
+          "university": "University of Toronto",
+          "sust_rank": 5,
+          "criteria_met": 11
+        },
+        {
+          "university": "McGill University",
+          "sust_rank": 32,
+          "criteria_met": 11
+        },
+        {
+          "university": "Dalhousie University",
+          "sust_rank": 53,
+          "criteria_met": 11
+        },
+        {
+          "university": "University of California, Berkeley",
+          "sust_rank": 1,
+          "criteria_met": 10
+        },
+        {
+          "university": "Massachusetts Institute of Technology (MIT)",
+          "sust_rank": 12,
+          "criteria_met": 10
+        },
+        {
+          "university": "University of Colorado Boulder",
+          "sust_rank": 47,
+          "criteria_met": 10
+        },
+        {
+          "university": "University of Northampton",
+          "sust_rank": 1000,
+          "criteria_met": 10
+        },
+        {
+          "university": "University of Waterloo",
+          "sust_rank": 41,
+          "criteria_met": 10
+        },
+        {
+          "university": "University of Saskatchewan",
+          "sust_rank": 138,
+          "criteria_met": 10
+        },
+        {
+          "university": "New Jersey Institute of Technology",
+          "sust_rank": 111,
+          "criteria_met": 9
+        },
+        {
+          "university": "University of Windsor",
+          "sust_rank": 136,
+          "criteria_met": 8
+        },
+        {
+          "university": "NC State University",
+          "sust_rank": 148,
+          "criteria_met": 7
+        },
+        {
+          "university": "University of Maryland, Baltimore",
+          "sust_rank": 313,
+          "criteria_met": 7
+        },
+        {
+          "university": "Concordia University",
+          "sust_rank": 216,
+          "criteria_met": 6
+        }
+      ]
+    },
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"criteria_met\"]) && isFinite(+datum[\"criteria_met\"]) && isValid(datum[\"sust_rank\"]) && isFinite(+datum[\"sust_rank\"])"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "symbol",
+      "style": ["circle"],
+      "from": {"data": "data_0"},
+      "encode": {
+        "update": {
+          "opacity": {"value": 0.7},
+          "size": {"value": 100},
+          "tooltip": {
+            "signal": "{\"University\": isValid(datum[\"university\"]) ? datum[\"university\"] : \"\"+datum[\"university\"], \"Criteria Met\": format(datum[\"criteria_met\"], \"\"), \"QS Rank\": format(datum[\"sust_rank\"], \"\")}"
+          },
+          "fill": {"value": "#0A1264"},
+          "ariaRoleDescription": {"value": "circle"},
+          "description": {
+            "signal": "\"No. of Sustainability Criteria Met: \" + (format(datum[\"criteria_met\"], \"d\")) + \"; QS Sustainability Rank (2024): \" + (format(datum[\"sust_rank\"], \"\")) + \"; University: \" + (isValid(datum[\"university\"]) ? datum[\"university\"] : \"\"+datum[\"university\"]) + \"; Criteria Met: \" + (format(datum[\"criteria_met\"], \"\")) + \"; QS Rank: \" + (format(datum[\"sust_rank\"], \"\"))"
+          },
+          "x": {"scale": "x", "field": "criteria_met"},
+          "y": {"scale": "y", "field": "sust_rank"},
+          "shape": {"value": "circle"}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": [5, 13],
+      "range": [0, {"signal": "width"}],
+      "zero": false
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {"data": "data_0", "field": "sust_rank"},
+      "range": [{"signal": "height"}, 0],
+      "reverse": true,
+      "nice": true,
+      "zero": true
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "tickMinStep": 1,
+      "gridScale": "y",
+      "grid": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "gridScale": "x",
+      "grid": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "No. of Sustainability Criteria Met",
+      "format": "d",
+      "tickMinStep": 1,
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "QS Sustainability Rank (2024)",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "zindex": 0
+    }
+  ],
+  "config": {
+    "axis": {"grid": true},
+    "style": {"cell": {"stroke": "transparent"}}
+  }
+}
