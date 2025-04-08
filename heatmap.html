@@ -4,9 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>University Sustainability Heatmap</title>
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+<!-- This is a link to the vega-lite which we're using to make graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -33,14 +34,12 @@
       font-size: 16px;
       font-weight: normal;
     }
-    #vis {
-      margin: auto;
-      width: 95%;
-      min-height: 800px;
-    }
+
   </style>
 </head>
 <body>
+      <div class="container">
+
   <header>
     <img src="https://raw.githubusercontent.com/h-bhatt/capstone/main/London_School_of_Economics-Logo.wine.png" alt="LSE Logo" />
     <div>
@@ -50,14 +49,12 @@
     <img src="https://raw.githubusercontent.comh-bhatt/capstone/main/Moodys_Logo.png" alt="Moody's Logo" />
   </header>
 
-  <div id="vis"></div>
+        <figure id="heatmap"></figure>
 
   <script>
-    const specUrl = "https://raw.githubusercontent.com/h-bhatt/capstone/main/visualization.vg.json";
+        vegaEmbed("#heatmap", 'visualisation.vg.json')
 
-    vegaEmbed('#vis', specUrl)
-      .then(result => console.log("Chart rendered successfully."))
-      .catch(console.error);
   </script>
+        
 </body>
 </html>
