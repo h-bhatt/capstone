@@ -13,7 +13,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
-      background-color: #f5f5f5;
+      background-color: #FFFFFF;
       text-align: center;
     }
     header {
@@ -60,9 +60,12 @@ footer {
   </header>
 
         <figure id="heatmap"></figure>
+          <figure id="corr"></figure>
+
 
   <script>
         vegaEmbed("#heatmap", 'visualization.vg.json')
+        vegaEmbed("#corr", 'corr.json')
 
   </script>
       <footer>
